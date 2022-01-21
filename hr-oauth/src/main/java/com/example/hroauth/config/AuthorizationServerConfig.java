@@ -2,6 +2,7 @@ package com.example.hroauth.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,6 +21,12 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public AuthorizationServerConfig() {
         super();
     }
+
+    @Value("${oauth.client.name}")
+    private String cliName;
+
+    @Value("${oauth.client.secret}")
+    private String clitSecret;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -41,8 +48,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
-                .withClient("myappname123")
-                        .secret(passwordEncoder.encode("myappsecret123"))
+                .withClient(cliName)
+                        .secret(passwordEncoder.encode(clitSecret))
                                 .scopes("read","write")
                                         .authorizedGrantTypes("password")
                                                 .accessTokenValiditySeconds(86400); //token que dura 24h
